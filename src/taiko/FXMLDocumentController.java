@@ -119,8 +119,14 @@ public class FXMLDocumentController implements Initializable {
 
      @FXML
     private TextField nameText;
+     
+     //Panel replay
+     
+      @FXML
+    private Pane panelReplay;
     
     private Game game;
+    private String level;
     
     
     
@@ -235,7 +241,7 @@ public class FXMLDocumentController implements Initializable {
     void goEasyLevel(ActionEvent event) {
         
         //antes hay que cargar el fichero de la camcion
-        
+        level = "Easy";
         animation(panelDificultyLevel, "leftCenter");
         animation(panelPlay, "left");
         panelPlay.setVisible(true);
@@ -248,7 +254,7 @@ public class FXMLDocumentController implements Initializable {
     void goMediumLevel(ActionEvent event) {
         
         //antes hay que cargar el fichero de la camcion
-        
+        level = "Medium";
         animation(panelDificultyLevel, "leftCenter");
         animation(panelPlay, "left");
         panelPlay.setVisible(true);
@@ -261,7 +267,7 @@ public class FXMLDocumentController implements Initializable {
     void goHardLevel(ActionEvent event) {
         
         //antes hay que cargar el fichero de la camcion
-        
+        level = "Hard";
         animation(panelDificultyLevel, "leftCenter");
         animation(panelPlay, "left");
         panelPlay.setVisible(true);
@@ -283,6 +289,10 @@ public class FXMLDocumentController implements Initializable {
      @FXML
     void goLevelsSinceWin(ActionEvent event) {
 
+        animation(panelScore, "leftCenter");
+        animation(panelDificultyLevel, "left");
+        panelDificultyLevel.setVisible(true);
+        
     }
     
     // Replay panel funcion -----------------------------
@@ -291,12 +301,21 @@ public class FXMLDocumentController implements Initializable {
     
      @FXML
     void goLevesSinceReplay(ActionEvent event) {
-
+        animation(panelReplay, "leftCenter");
+        animation(panelDificultyLevel, "left");
+        panelDificultyLevel.setVisible(true);
     }
     
      @FXML
     void goReplayGameLevel(ActionEvent event) {
-
+        //animation(panelReplay, "leftCenter");
+        if(level.equalsIgnoreCase("Easy")){
+           this.goEasyLevel(event);
+        }else if(level.equalsIgnoreCase("Medium")){
+           this.goMediumLevel(event);
+        }else if(level.equalsIgnoreCase("Hard")){
+           this.goHardLevel(event);
+        }
     }
     
     // --------------------------------------------------

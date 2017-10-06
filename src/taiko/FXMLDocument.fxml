@@ -12,10 +12,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.collections.*?>
+<?import javafx.event.*?>
 
 <AnchorPane id="AnchorPane" onKeyPressed="#buttonPress" onKeyReleased="#buttonRelease" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="taiko.FXMLDocumentController">
    <children>
-      <Pane fx:id="panelMenuPrincipal" prefHeight="400.0" prefWidth="600.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <Pane fx:id="panelMenuPrincipal" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <ImageView fitHeight="400.0" fitWidth="600.0" opacity="0.67" pickOnBounds="true" smooth="false">
                <image>
@@ -245,7 +246,7 @@
       </Pane>
       <Pane fx:id="panelScore" prefHeight="400.0" prefWidth="600.0" visible="false">
          <children>
-            <ImageView fitHeight="400.0" fitWidth="600.0" opacity="0.67" pickOnBounds="true" smooth="false">
+            <ImageView fitHeight="400.0" fitWidth="600.0" pickOnBounds="true" smooth="false">
                <image>
                   <Image url="@../fotos/fondo2.jpg" />
                </image>
@@ -277,9 +278,9 @@
             <Button fx:id="bottonRnk" layoutX="338.0" layoutY="332.0" mnemonicParsing="false" onAction="#checkRnk" prefHeight="25.0" prefWidth="141.0" text="Ranking" />
          </children>
       </Pane>
-      <Pane fx:id="panelReplay" prefHeight="400.0" prefWidth="600.0">
+      <Pane fx:id="panelReplay" prefHeight="400.0" prefWidth="600.0" visible="false">
          <children>
-            <ImageView fitHeight="400.0" fitWidth="600.0" opacity="0.67" pickOnBounds="true" smooth="false">
+            <ImageView fitHeight="400.0" fitWidth="600.0" pickOnBounds="true" smooth="false">
                <image>
                   <Image url="@../fotos/fondo2.jpg" />
                </image>
@@ -302,7 +303,8 @@
                               <Image url="@../fotos/replay.PNG" />
                            </image>
                         </ImageView>
-                     </graphic></JFXButton>
+                     </graphic>
+                  </JFXButton>
                   <ImageView fitHeight="150.0" fitWidth="423.0" layoutX="65.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../fotos/gameover.png" />
