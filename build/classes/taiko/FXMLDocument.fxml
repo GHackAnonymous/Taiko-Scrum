@@ -13,9 +13,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.collections.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="taiko.FXMLDocumentController" onKeyPressed="#buttonPress" onKeyReleased="#buttonRelease">
+<AnchorPane id="AnchorPane" onKeyPressed="#buttonPress" onKeyReleased="#buttonRelease" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="taiko.FXMLDocumentController">
    <children>
-      <Pane fx:id="panelMenuPrincipal" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <Pane fx:id="panelMenuPrincipal" prefHeight="400.0" prefWidth="600.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <ImageView fitHeight="400.0" fitWidth="600.0" opacity="0.67" pickOnBounds="true" smooth="false">
                <image>
@@ -241,6 +241,31 @@
                   </JFXButton>
                </children>
             </Pane>
+         </children>
+      </Pane>
+      <Pane fx:id="panelScore" prefHeight="400.0" prefWidth="600.0">
+         <children>
+            <ImageView fitHeight="400.0" fitWidth="600.0" opacity="0.67" pickOnBounds="true" smooth="false">
+               <image>
+                  <Image url="@../fotos/fondo2.jpg" />
+               </image>
+            </ImageView>
+            <Pane layoutX="195.0" layoutY="24.0" prefHeight="143.0" prefWidth="210.0" style="-fx-background-color: rgba(130, 130, 130,0.7); -fx-background-radius: 50%; -fx-border-radius: 50%;">
+               <children>
+                  <Label layoutX="77.0" layoutY="14.0" prefHeight="30.0" prefWidth="56.0" text="Score">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="scoreLabel" alignment="CENTER" layoutX="19.0" layoutY="50.0" prefHeight="67.0" prefWidth="168.0" text="0">
+                     <font>
+                        <Font size="34.0" />
+                     </font>
+                  </Label>
+               </children></Pane>
+            <ListView layoutX="116.0" layoutY="182.0" prefHeight="137.0" prefWidth="369.0" />
+            <TextField fx:id="nameText" layoutX="121.0" layoutY="332.0" prefHeight="25.0" prefWidth="198.0" promptText="Name" />
+            <Button fx:id="bottonRnk" layoutX="338.0" layoutY="332.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="141.0" text="Ranking" />
          </children>
       </Pane>
    </children>

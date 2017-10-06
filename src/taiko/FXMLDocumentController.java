@@ -17,10 +17,13 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -84,9 +87,6 @@ public class FXMLDocumentController implements Initializable {
     public Pane panelPlay;
     
     @FXML
-    public Label scoreLabel;
-    
-    @FXML
     private ImageView perfectPhotoBlue;
     
     @FXML
@@ -104,6 +104,22 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private ImageView goodPhotoRed;
     
+    //Ranking panel 
+    @FXML
+    private Button bottonRnk;
+    
+    @FXML
+    private Label scoreLabel;
+    
+     @FXML
+    private Pane panelScore;
+     
+     @FXML
+    private ListView<?> listRnk;
+
+     @FXML
+    private TextField nameText;
+    
     private Game game;
     
     
@@ -115,34 +131,34 @@ public class FXMLDocumentController implements Initializable {
     }
     
     public void redPerfect(){
-        perfectPhotoBlue.setVisible(true);
+    	perfectPhotoRed.setVisible(true);
         goodPhotoRed.setVisible(false);
         badPhotoRed.setVisible(false);
     }
     public void redGood(){
         goodPhotoRed.setVisible(true);
         badPhotoRed.setVisible(false);
-        perfectPhotoBlue.setVisible(false);
+        perfectPhotoRed.setVisible(false);
     }
     public void redBad(){
         goodPhotoRed.setVisible(false);
         badPhotoRed.setVisible(true);
-        perfectPhotoBlue.setVisible(false);
+        perfectPhotoRed.setVisible(false);
     }
     public void bluePerfect(){
-        perfectPhotoRed.setVisible(true);
-        goodPhotoRed.setVisible(false);
-        badPhotoRed.setVisible(false);
+        perfectPhotoBlue.setVisible(true);
+        goodPhotoBlue.setVisible(false);
+        badPhotoBlue.setVisible(false);
     }
     public void blueGood(){
         goodPhotoBlue.setVisible(true);
         badPhotoBlue.setVisible(false);
-        perfectPhotoRed.setVisible(false);
+        perfectPhotoBlue.setVisible(false);
     }
     public void blueBad(){
         goodPhotoBlue.setVisible(false);
         badPhotoBlue.setVisible(true);
-        perfectPhotoRed.setVisible(false);
+        perfectPhotoBlue.setVisible(false);
     }
     
     @FXML
@@ -253,6 +269,37 @@ public class FXMLDocumentController implements Initializable {
 		Thread background=new Thread(()->game.start());
 		background.start();
     }
+    
+    @FXML
+    void checkRnk(ActionEvent event) {
+        //
+        
+        
+        animation(panelScore, "leftCenter");
+        animation(panelDificultyLevel, "left");
+        
+    }
+    
+     @FXML
+    void goLevelsSinceWin(ActionEvent event) {
+
+    }
+    
+    // Replay panel funcion -----------------------------
+    
+
+    
+     @FXML
+    void goLevesSinceReplay(ActionEvent event) {
+
+    }
+    
+     @FXML
+    void goReplayGameLevel(ActionEvent event) {
+
+    }
+    
+    // --------------------------------------------------
     
     //Los ventos no funcionan cuando se inicia el juego desde la ventana principal
     
