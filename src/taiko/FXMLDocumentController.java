@@ -9,7 +9,19 @@ import com.jfoenix.controls.JFXButton;
 
 import background.*;
 import javafx.event.ActionEvent;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javafx.animation.KeyFrame;
@@ -115,18 +127,18 @@ public class FXMLDocumentController implements Initializable {
     private Pane panelScore;
      
      @FXML
-    private ListView<?> listRnk;
+    private ListView<String> listRnk;
 
      @FXML
     private TextField nameText;
-     
-     //Panel replay
-     
-      @FXML
+	
+	@FXML
     private Pane panelReplay;
     
+    
     private Game game;
-    private String level;
+	private Map<String,List<Long>> rankings;
+	private String song;
     
     
     
@@ -241,7 +253,7 @@ public class FXMLDocumentController implements Initializable {
     void goEasyLevel(ActionEvent event) {
         
         //antes hay que cargar el fichero de la camcion
-        level = "Easy";
+        
         animation(panelDificultyLevel, "leftCenter");
         animation(panelPlay, "left");
         panelPlay.setVisible(true);
@@ -254,7 +266,7 @@ public class FXMLDocumentController implements Initializable {
     void goMediumLevel(ActionEvent event) {
         
         //antes hay que cargar el fichero de la camcion
-        level = "Medium";
+        
         animation(panelDificultyLevel, "leftCenter");
         animation(panelPlay, "left");
         panelPlay.setVisible(true);
@@ -267,7 +279,7 @@ public class FXMLDocumentController implements Initializable {
     void goHardLevel(ActionEvent event) {
         
         //antes hay que cargar el fichero de la camcion
-        level = "Hard";
+        
         animation(panelDificultyLevel, "leftCenter");
         animation(panelPlay, "left");
         panelPlay.setVisible(true);
@@ -276,56 +288,167 @@ public class FXMLDocumentController implements Initializable {
 		background.start();
     }
     
-    @FXML
-    void checkRnk(ActionEvent event) {
-        //
-        
-        
-        animation(panelScore, "leftCenter");
-        animation(panelDificultyLevel, "left");
-        
+    public void goRnk(String song,Long actualScore)
+    {
+    	goodPhotoRed.setVisible(false);
+        badPhotoRed.setVisible(false);
+        perfectPhotoRed.setVisible(false);
+        perfectPhotoBlue.setVisible(false);
+        goodPhotoBlue.setVisible(false);
+        badPhotoBlue.setVisible(false);
+        animation(panelScore, "right");
+        animation(panelPlay, "centeRight");
+    	panelScore.setVisible(true);
+    	this.song=song;
+    	rankings=new HashMap<>();
+        scoreLabel.setText(actualScore.toString());
+        int rankingsDimension=0;
+		try(BufferedReader bf=new BufferedReader(new FileReader(song+".rnk"))) 
+		{
+			String s;
+			while((s=bf.readLine())!=null)
+			{
+				listRnk.getItems().add(s);
+				rankingsDimension++;
+				Long score=Long.parseLong(s.split(" ")[0]);
+				String user=s.split(" ")[1];
+				if(rankings.containsKey(user))
+					rankings.get(user).add(score);
+				else
+				{
+					List<Long> list=new ArrayList<>();
+					list.add(score);
+					rankings.put(user,list);
+				}	
+			}
+		} 
+		catch (FileNotFoundException e) 
+		{
+			e.printStackTrace();
+		} 
+		catch (IOException e1)
+		{
+			e1.printStackTrace();
+		}
+		Long min=rankings.values().stream()
+				.flatMap(List::stream)
+				.mapToLong(s->s).min()
+				.orElse(0);
+
+		if(actualScore>=min||rankingsDimension<10)
+		{
+			bottonRnk.setDisable(false);
+			nameText.setDisable(false);
+		}
+		else
+		{
+
+			bottonRnk.setDisable(true);
+			nameText.setDisable(true);
+		}
+		
     }
     
-     @FXML
-    void goLevelsSinceWin(ActionEvent event) {
+    @FXML
+    void checkRnk(ActionEvent event) {
+        String user=nameText.getText();
+        Long score=Long.parseLong(scoreLabel.getText());
+        if(user!=null&&!user.equals(""))
+        {
+        	if(rankings.containsKey(user))
+        		rankings.get(user).add(score);
+        	else
+        	{
+        		List<Long> list=new ArrayList<>();
+				list.add(score);
+				rankings.put(user,list);
+        	}
+        	try (BufferedWriter bw = new BufferedWriter(new FileWriter(song+".rnk"))) {
 
-        animation(panelScore, "leftCenter");
+    			rankings.entrySet().stream()
+    			.flatMap(e->
+    			{
+    				List<String> l=new ArrayList<>();
+    				String s=e.getKey();
+    				e.getValue().stream()
+    					.forEach(v->l.add(v.toString()+" "+s));
+    				return l.stream();    				
+    			})
+    			.sorted(Comparator.comparing(s->Long.parseLong(s.toString().split(" ")[0])).reversed())
+    			.limit(10)
+    			.forEach(s->{
+					try {
+						bw.write(s+'\n');
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				});
+
+    		} catch (IOException e) {
+
+    			e.printStackTrace();
+
+    		}
+     	
+        }
+        rankings=null;
+        listRnk.getItems().clear();
+        nameText.setText("");
+    	animation(panelScore, "leftCenter");
         animation(panelDificultyLevel, "left");
         panelDificultyLevel.setVisible(true);
-        
+    }
+	
+	@FXML
+    void goLevelsSinceWin(ActionEvent event)
+	{
+		rankings=null;
+        listRnk.getItems().clear();
+		animation(panelScore, "leftCenter");
+        animation(panelDificultyLevel, "left");
+        panelDificultyLevel.setVisible(true);
     }
     
     // Replay panel funcion -----------------------------
     
-
-    
+	public void goReplay(String song)
+	{
+		goodPhotoRed.setVisible(false);
+        badPhotoRed.setVisible(false);
+        perfectPhotoRed.setVisible(false);
+        perfectPhotoBlue.setVisible(false);
+        goodPhotoBlue.setVisible(false);
+        badPhotoBlue.setVisible(false);
+		animation(panelReplay, "right");
+        animation(panelPlay, "centeRight");
+    	panelReplay.setVisible(true);
+    	this.song=song;
+	}
      @FXML
     void goLevesSinceReplay(ActionEvent event) {
-        animation(panelReplay, "leftCenter");
-        animation(panelDificultyLevel, "left");
-        panelDificultyLevel.setVisible(true);
+    	 animation(panelReplay, "leftCenter");
+         animation(panelDificultyLevel, "left");
+         panelDificultyLevel.setVisible(true);
     }
     
      @FXML
     void goReplayGameLevel(ActionEvent event) {
-        //animation(panelReplay, "leftCenter");
-        if(level.equalsIgnoreCase("Easy")){
-           this.goEasyLevel(event);
-        }else if(level.equalsIgnoreCase("Medium")){
-           this.goMediumLevel(event);
-        }else if(level.equalsIgnoreCase("Hard")){
-           this.goHardLevel(event);
-        }
+    	 
+		 animation(panelReplay, "leftCenter");
+	     animation(panelPlay, "left");
+	     panelPlay.setVisible(true);
+	     game=new Game(this,song);
+    	 Thread background=new Thread(()->game.start());
+		 background.start();
     }
-    
-    // --------------------------------------------------
     
     //Los ventos no funcionan cuando se inicia el juego desde la ventana principal
     
     @FXML
     void buttonPress(KeyEvent  event) 
     {
-    	if(event.getEventType() == KeyEvent.KEY_PRESSED) 
+    	if((event.getEventType()==KeyEvent.KEY_PRESSED)&&panelPlay.isVisible())
     	{
     		long time=System.currentTimeMillis()-game.getStartTime();
             if(event.getCode()==KeyCode.Z)

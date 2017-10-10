@@ -14,6 +14,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
 import background.Interval.Position;
+import javafx.application.Platform;
 import taiko.*;
 
 public class Game 
@@ -30,6 +31,8 @@ public class Game
 	private Map<Long,Guide> guidesMap=new HashMap<>();
 	private int fails;
 	private boolean end;
+	private boolean win;
+	private long score;
 
 	//INITIALIZATION
 	public Game(FXMLDocumentController c,String song) 
@@ -56,13 +59,16 @@ public class Game
 	public void start()
 	{
 		end=false;
+		win=false;
 		fails=0;
+		score=0;
 		boolean endL=false,endR=false;
+		Clip clip=null;
 		try 
 		{
-			Thread.sleep(3000);
+			Thread.sleep(1000);
 			File soundfile=new File(song+".wav");
-			Clip clip = AudioSystem.getClip();
+			clip = AudioSystem.getClip();
     		AudioInputStream inputStream = AudioSystem.getAudioInputStream(soundfile);
 		    clip.open(inputStream);
 		    clip.start();
@@ -104,11 +110,22 @@ public class Game
 					guides.get(i).move();
 				}
 				end=checkFails();
-				if(endL&&endR)
+				if(endL&&endR&&(!guides.get(guides.size()-1).isVisible()))
+				{
 					end=true;
+					win=true;
+				}
 				Thread.sleep(27);
 			}
-			System.exit(0);
+			clip.close();
+			if(win==true)
+				Platform.runLater(()->controller.goRnk(song,score));
+			else
+			{
+				for(Guide g:guides)
+					g.destroy();
+				Platform.runLater(()->controller.goReplay(song));
+			}
 		}
 		catch (InterruptedException e) 
 		{
@@ -120,7 +137,6 @@ public class Game
 	public void incrementFails() 
 	{
 		fails++;
-		System.out.println(fails);
 	}
 	private boolean checkFails()
 	{
@@ -128,34 +144,66 @@ public class Game
 			return true;
 		return false;
 	}
+	public void incrementScore(long score)
+	{
+		this.score+=score;
+	}
 	public void binarySearchLeft(long time) 
 	{
 		int l=0;
 		int r=intervalsL.size()-1;
-		binarySearchR(intervalsL,time,l,r);
+		if(!binarySearchR(intervalsL,time,l,r))
+			Platform.runLater(()->controller.blueBad());;
 	}
 	public void binarySearchRight(long time) 
 	{
 		int l=0;
 		int r=intervalsR.size()-1;
-		binarySearchR(intervalsR,time,l,r);
+		if(!binarySearchR(intervalsR,time,l,r))
+			Platform.runLater(()->controller.redBad());
 	}
-	private void binarySearchR(List<Interval> intervals,long time,int l,int r) 
+	private boolean binarySearchR(List<Interval> intervals,long time,int l,int r) 
 	{
 		if(l>r)
-			return;
+		{
+			incrementFails();
+			return false;
+		}
 		int m=(l+r)/2;
 		int flag=intervals.get(m).contains(time);
 		if(flag==0)
 		{
-			Guide g=guidesMap.get(intervals.get(m).getLimitL()-950);
-			g.setChecked(true);
+			int good=intervals.get(m).containsG(time);
+			if(good==0)
+			{
+				Guide g=guidesMap.get(intervals.get(m).getLimitL()-950);
+				g.setChecked(true);
+				int perfect=intervals.get(m).containsP(time);
+				if(perfect==0)
+					g.setPerfect(true);
+			}
+			else if((m>0)&&(good<0)&&(intervals.get(m-1).containsG(time)==0))
+			{
+				Guide g=guidesMap.get(intervals.get(m-1).getLimitL()-950);
+				g.setChecked(true);
+				int perfect=intervals.get(m-1).containsP(time);
+				if(perfect==0)
+					g.setPerfect(true);
+			}
+			else if(((m+1)<(intervals.size()))&&(good>0)&&(intervals.get(m+1).containsG(time)==0))
+			{
+				Guide g=guidesMap.get(intervals.get(m+1).getLimitL()-950);
+				g.setChecked(true);
+				int perfect=intervals.get(m+1).containsP(time);
+				if(perfect==0)
+					g.setPerfect(true);
+			}
+			return true;
 		}
 		else if(flag>0)
-			binarySearchR(intervals,time,m+1,r);
+			return binarySearchR(intervals,time,m+1,r);
 		else
-			binarySearchR(intervals,time,l,m-1);	
-		return;
+			return binarySearchR(intervals,time,l,m-1);
 	}
 	public void addIntervalL(Interval interval) 
 	{

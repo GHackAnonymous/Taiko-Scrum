@@ -8,6 +8,10 @@ public class Interval
 	}
 	private long limitL;
 	private long limitR;
+	private long limitLP;
+	private long limitRP;
+	private long limitLB;
+	private long limitRB;
 	
 	//INITIALIZATION
 	public Interval(Game game,String init) 
@@ -25,6 +29,10 @@ public class Interval
 		center=stringConversion(init);
 		limitL=center-100;
 		limitR=center+100;
+		limitLP=center-25;
+		limitRP=center+25;
+		limitLB=center-180;
+		limitRB=center+180;
 		if(position==Position.left)
 		{
 			this.game.addIntervalL(this);
@@ -64,9 +72,25 @@ public class Interval
 	}
 	public int contains(long time)
 	{
+		if(time<limitLB)
+			return -1;
+		if(time>limitRB)
+			return +1;
+		return 0;
+	}
+	public int containsG(long time)
+	{
 		if(time<limitL)
 			return -1;
 		if(time>limitR)
+			return +1;
+		return 0;
+	}
+	public int containsP(long time)
+	{
+		if(time<limitLP)
+			return -1;
+		if(time>limitRP)
 			return +1;
 		return 0;
 	}
@@ -78,5 +102,13 @@ public class Interval
 	public long getLimitR() 
 	{
 		return limitR;
+	}
+	public long getLimitLP()
+	{
+		return limitLP;
+	}
+	public long getLimitRP()
+	{
+		return limitRP;
 	}
 }

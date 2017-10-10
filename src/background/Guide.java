@@ -11,6 +11,7 @@ public class Guide
 	private Circle circle;
 	private boolean active;
 	private boolean checked;
+	private boolean perfect;
 	private Position position;
 
 	public Guide(Game game,FXMLDocumentController controller,Position position) 
@@ -18,7 +19,6 @@ public class Guide
 		this.game=game;
 		this.position=position;
 		circle=new Circle();
-		circle.setVisible(true);
 		if(position==Position.left)
 			circle.setLayoutX(220.0);
 		else
@@ -27,6 +27,8 @@ public class Guide
 		circle.setRadius(25.0);
 		circle.setVisible(true);
 		active=true;
+		checked=false;
+		perfect=false;
 		Platform.runLater(new Runnable() 
 		{
 			@Override public void run() 
@@ -47,9 +49,27 @@ public class Guide
 	{
 		this.checked=checked;
 	}
+	public void setPerfect(boolean perfect) 
+	{
+		this.perfect=perfect;
+	}
 	public void isFail()
 	{
-		if(!checked)
+		if(perfect)
+		{
+			game.incrementScore(300);
+			Platform.runLater(new Runnable() 
+			{
+				@Override public void run() 
+				{
+					if(position==Position.left)
+						game.getController().bluePerfect();
+					else
+						game.getController().redPerfect();
+				}
+	        });
+		}
+		else if(!checked)
 		{
 			game.incrementFails();
 			Platform.runLater(new Runnable() 
@@ -64,6 +84,8 @@ public class Guide
 	        });
 		}
 		else
+		{
+			game.incrementScore(100);
 			Platform.runLater(new Runnable() 
 			{
 				@Override public void run() 
@@ -74,6 +96,7 @@ public class Guide
 						game.getController().redGood();
 				}
 	        });
+		}
 	}
 	public boolean isVisible() {
 		// TODO Auto-generated method stub
@@ -85,7 +108,6 @@ public class Guide
 	}
 	public void move() 
 	{
-		// TODO Auto-generated method stub
 		circle.setLayoutY(circle.getLayoutY()+8);
 		if(active&&circle.getLayoutY()>350.0)
 		{
