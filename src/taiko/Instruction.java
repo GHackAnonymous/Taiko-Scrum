@@ -31,10 +31,10 @@ public class Instruction {
                + "behera heltzen direnean eta marka borobilarekin lerrokatuta "
                + "dagoenean, gezi egokia sakatzea da. Nota heldu den aldearen "
                + "arabera eskubiko gezia edo ezkerrekoa sakatu beharko duzu.";
-       italianInstruction = "L'obiettivo di questo gioco è premere il tasto "
+       italianInstruction = "L'obiettivo di questo gioco e' premere il tasto "
     		   + "appropriato quando le note della musica raggiungono il fondo "
-    		   + "dello schermo e sono allineati con i pulsanti circolari. "
-    		   + "A seconda di quale lato arrivino bisognerà premere il tasto "
+    		   + "dello schermo e sono allineate con i pulsanti circolari. "
+    		   + "A seconda di quale lato arrivino bisognera' premere il tasto "
     		   + "destro o sinistro";
     } 
    public Instruction(String englishInstruction, String spanishInstruction, String basqueInstruction, String italianInstruction) {
